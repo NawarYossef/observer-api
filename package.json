@@ -5,10 +5,11 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "mocha --exit"
+    "test": "mocha --exit",
+    "start": "node server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Nawar Yossef",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.0",
