@@ -17,7 +17,7 @@ app.use(function(req, res, next) {
 });
 
 app.get("/api/user/*", (req , res) => {
-  res.status(200).json({ok: true})
+  res.send("hi")
 })
 
 app.listen(PORT, () => {
