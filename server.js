@@ -1,9 +1,18 @@
 const express = require("express");
 const app = express();
+const cors = require('cors');
+const {CLIENT_ORIGIN} = require('./config');
 
 const PORT = process.env.PORT || 8080;
 
-app.get("/api/*", (req , res) => {
+// CORS
+app.use(
+  cors({
+      origin: CLIENT_ORIGIN
+  })
+);
+
+app.get("/api/user/*", (req , res) => {
   res.status(200).json({ok: true})
 })
 
