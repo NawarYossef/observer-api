@@ -3,7 +3,7 @@ const app = express();
 const cors = require("cors");
 const { CLIENT_ORIGIN } = require("./config");
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8080
 
 // CORS
 app.use(
@@ -12,7 +12,7 @@ app.use(
   })
 );
 
-app.get("/api/user/*", (req, res) => {
+app.get("/", (req, res) => {
   res.status(200).json({ ok: true });
 });
 
