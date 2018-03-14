@@ -12,7 +12,7 @@ router.use(jsonParser);
 
 // ============== GET endpoint ==============
 router.get("/", (req, res) => {
-  Job.find({ user: req.user.id })
+  Job.find()
     // call the `.serialize` instance method we've created in
     // models.js in order to only expose the data we want the API return.
     .then(jobs => {
@@ -42,33 +42,43 @@ router.post("/", (req, res) => {
     "jobType",
     "companyName",
     "companyLocation",
-    "Position",
-    "Salary",
-    "companySize",
+    "position",
+    "salary",
     "companyWebsite",
-    "JobDescriptionWebsite"
+    "companySize",
+    "linkJobDescription",
+    "dateApplied",
+    "contactName",
+    "contactEmail",
+    "codingChallengeDate",
+    "techChallengeDate"
   ];
 
-  for (let i = 0; i < requiredFields.length; i++) {
-    const field = requiredFields[i];
-    if (!(field in req.body)) {
-      const message = `Missing \`${field}\` in request body`;
-      console.error(message);
-      return res.status(400).send(message);
-    }
-  }
+  // for (let i = 0; i < requiredFields.length; i++) {
+  //   const field = requiredFields[i];
+  //   if (!(field in req.body)) {
+  //     const message = `Missing \`${field}\` in request body`;
+  //     console.error(message);
+  //     return res.status(400).send(message);
+  //   }
+  // }
 
   Job.create({
     dateDiscovered: req.body.dateDiscovered,
     jobType: req.body.jobType,
     companyName: req.body.companyName,
     companyLocation: req.body.companyLocation,
-    Position: req.body.Position,
-    Salary: req.body.Salary,
-    companySize: req.body.companySize,
+    position: req.body.position,
+    salary: req.body.salary,
     companyWebsite: req.body.companyWebsite,
-    JobDescriptionWebsite: req.body.JobDescriptionWebsite,
-    user: req.user.id
+    companySize: req.body.companySize,
+    linkJobDescription: req.body.linkJobDescription,
+    dateApplied: req.body.dateApplied,
+    contactName: req.body.contactName,
+    contactEmail: req.body.contactEmail, 
+    codingChallengeDate: req.body.codingChallengeDate, 
+    techChallengeDate: req.body.techChallengeDate
+    // user: req.user.id
   })
     .then(job => res.status(201).json(job.serialize()))
     .catch(err => {
@@ -91,11 +101,16 @@ router.put("/:id", (req, res) => {
     "jobType",
     "companyName",
     "companyLocation",
-    "Position",
-    "Salary",
-    "companySize",
+    "position",
+    "salary",
     "companyWebsite",
-    "JobDescriptionWebsite"
+    "companySize",
+    "linkJobDescription",
+    "dateApplied",
+    "contactName",
+    "contactEmail",
+    "codingChallengeDate",
+    "techChallengeDate"
   ];
 
   updatableFields.forEach(field => {

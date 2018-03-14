@@ -5,12 +5,17 @@ const JobSchema = mongoose.Schema({
   jobType: { type: String, required: false },
   companyName: { type: String, required: false },
   companyLocation: { type: String, required: false },
-  Position: { type: String, required: false },
-  Salary: { type: Number, required: false },
-  companySize: { type: Number, required: false },
+  position: { type: String, required: false },
+  salary: { type: Number, required: false },
   companyWebsite: { type: String, required: false },
-  JobDescriptionWebsite: { type: String, required: false },
-  
+  companySize: { type: Number, required: false },
+  linkJobDescription: { type: String, required: false },
+  dateApplied: { type: Date, required: false },
+  contactName: { type: String, required: false },
+  contactEmail: { type: String, required: false },
+  codingChallengeDate: { type: Date, required: false },
+  techChallengeDate: { type: Date, required: false },
+
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
 });
 
@@ -21,11 +26,16 @@ JobSchema.methods.serialize = function() {
     jobType: this.jobType,
     companyName: this.companyName,
     companyLocation: this.companyLocation,
-    Position: this.Position,
-    Salary: this.Salary,
-    companySize: this.companySize,
+    position: this.position,
+    salary: this.salary,
     companyWebsite: this.companyWebsite,
-    JobDescriptionWebsite: this.JobDescriptionWebsite
+    companySize: this.companySize,
+    linkJobDescription: this.linkJobDescription,
+    dateApplied: this.dateApplied,
+    contactName: this.contactName,
+    contactEmail: this.contactEmail,
+    codingChallengeDate: this.codingChallengeDate,
+    techChallengeDate: this.techChallengeDate
   };
 };
 
