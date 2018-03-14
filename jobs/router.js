@@ -38,20 +38,15 @@ router.get("/:id", (req, res) => {
 // ============== POST endpoint ==============
 router.post("/", (req, res) => {
   const requiredFields = [
-    "dateDiscovered",
-    "jobType",
     "companyName",
     "companyLocation",
-    "position",
+    "positionTitle",
+    "companyType",
     "salary",
     "companyWebsite",
-    "companySize",
     "linkJobDescription",
-    "dateApplied",
-    "contactName",
-    "contactEmail",
-    "codingChallengeDate",
-    "techChallengeDate"
+    "jobStatus",
+    "notes"
   ];
 
   // for (let i = 0; i < requiredFields.length; i++) {
@@ -64,20 +59,15 @@ router.post("/", (req, res) => {
   // }
 
   Job.create({
-    dateDiscovered: req.body.dateDiscovered,
-    jobType: req.body.jobType,
     companyName: req.body.companyName,
-    companyLocation: req.body.companyLocation,
-    position: req.body.position,
+    companyLocation: req.body.location,
+    positionTitle: req.body.positionTitle,
+    companyType: req.body.companyType,
     salary: req.body.salary,
     companyWebsite: req.body.companyWebsite,
-    companySize: req.body.companySize,
     linkJobDescription: req.body.linkJobDescription,
-    dateApplied: req.body.dateApplied,
-    contactName: req.body.contactName,
-    contactEmail: req.body.contactEmail, 
-    codingChallengeDate: req.body.codingChallengeDate, 
-    techChallengeDate: req.body.techChallengeDate
+    jobStatus: req.body.jobStatus,
+    notes: req.body.notes
     // user: req.user.id
   })
     .then(job => res.status(201).json(job.serialize()))
@@ -97,20 +87,15 @@ router.put("/:id", (req, res) => {
 
   const updated = {};
   const updatableFields = [
-    "dateDiscovered",
-    "jobType",
     "companyName",
     "companyLocation",
-    "position",
+    "positionTitle",
+    "companyType",
     "salary",
     "companyWebsite",
-    "companySize",
     "linkJobDescription",
-    "dateApplied",
-    "contactName",
-    "contactEmail",
-    "codingChallengeDate",
-    "techChallengeDate"
+    "jobStatus",
+    "notes"
   ];
 
   updatableFields.forEach(field => {
@@ -126,7 +111,7 @@ router.put("/:id", (req, res) => {
 
 // ============== DELETE endpoint ==============
 router.delete("/:id", (req, res) => {
-  Trip.findByIdAndRemove(req.params.id)
+    Job.findByIdAndRemove(req.params.id)
     .then(job => res.status(204).end())
     .catch(err => res.status(500).json({ message: "Internal server error" }));
 });
