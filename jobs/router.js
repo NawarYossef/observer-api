@@ -49,14 +49,14 @@ router.post("/", (req, res) => {
     "notes"
   ];
 
-  // for (let i = 0; i < requiredFields.length; i++) {
-  //   const field = requiredFields[i];
-  //   if (!(field in req.body)) {
-  //     const message = `Missing \`${field}\` in request body`;
-  //     console.error(message);
-  //     return res.status(400).send(message);
-  //   }
-  // }
+  for (let i = 0; i < requiredFields.length; i++) {
+    const field = requiredFields[i];
+    if (!(field in req.body)) {
+      const message = `Missing \`${field}\` in request body`;
+      console.error(message);
+      return res.status(400).send(message);
+    }
+  }
 
   Job.create({
     companyName: req.body.companyName,
@@ -105,7 +105,7 @@ router.put("/:id", (req, res) => {
   });
 
   Job.findByIdAndUpdate(req.params.id, { $set: updated }, { new: true })
-    .then(updatedTrip => res.status(204).json(updatedTrip.serialize()))
+    .then(updatedJob => res.status(204).json(updatedJob.serialize()))
     .catch(err => res.status(500).json({ message: "Something went wrong" }));
 });
 
