@@ -33,6 +33,10 @@ app.use('/api/activities/', activitiesRouter);
 app.get("*", (req, res) => {
   res.status(404).json({ message:"not found" });
 });
+app.get("*", (req, res) => {
+  res.status(404).json({ message:"not found" });
+});
+
 
 let server;
 
