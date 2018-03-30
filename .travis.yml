@@ -1,2 +1,9 @@
 language: node_js
 node_js: node
+deploy:
+  provider: heroku
+  api_key:
+    secure: BZsc0sJlcjefzNMo9zP26HDKW73EjKKlra7jBp8O1pelt38UAM0hqBb2Lu5d9ZqqBBi4OXpbDM+Q5IyhDiP4gbpkx2CVjPdg6eYeZyVBRYOopkD8EZNIS4jOHnXNTXw+vzv5NFf4KdV29vw2T01EjRJ+Zf8M0zA7m8sWx/BD9nqbxlJLtsxUvgAQ/JWOcZrjlkp2Xt6gceK803Mm639YRQ3FCbp1Q7+wAoh3MgDJYkFT2P1HXuckBV7EkMbGgnFGJDJ+YvWIjRGEVnDSDIK6+0q53hA5AL3UMKAbanv3wgvuerhxj8TXy0IgnTaRg53EqwrrHLRL3kDLZ9L62yoNGsjRKiF5e5dLB9j2Zc5si0LZ5PyyrVATlQb6nLptMAsBwEMMhKaB4Kr4UV63FM35nD2o2Bq/yXwQNdR271Qu4nVau38FnESj2Qq6cST1E2TxX0j9gbmr0CIwFT91YLLNoMB1PnCkxLMJHZQKW/TUz/HZf7R8MXOYJdW9f8IcPHnD0C9uTnPMOd+F/aLLCKpQtgfiKEuGGlVWXWOaiLlTKqTWRGszu9lr7MMePM2Un/tie9a9eZrR9oIgRUnFseWiNb0Pf6Y1l+5mq+79RRdG422hIm5wH+p/hwuEsw5YgGIxXaHrnr9H+wFKgYQ/4aJ2X7wIB1VDVDuTslB/vcyHrUk=
+  app: observer-api-server
+  on:
+    repo: NawarYossef/observer-api
