@@ -71,7 +71,7 @@ function generateCompanyLocation() {
     "rect developer",
     "javascript developer"
   ];
-  return names[Math.floor(Math.random() *names.length)];
+  return names[Math.floor(Math.random() * names.length)];
 }
 
 function generatePositionTitle() {
@@ -82,7 +82,7 @@ function generatePositionTitle() {
     "rect developer",
     "javascript developer"
   ];
-  return names[Math.floor(Math.random() *names.length)];
+  return names[Math.floor(Math.random() * names.length)];
 }
 
 function generateCompanyType() {
@@ -91,7 +91,7 @@ function generateCompanyType() {
     "startup",
     "corporation"
   ];
-  return types[Math.floor(Math.random() *types.length)];
+  return types[Math.floor(Math.random() * types.length)];
 }
 
 function generateCompanyWebsite() {
@@ -100,7 +100,7 @@ function generateCompanyWebsite() {
     "https://www.cosmopolitan.com/uk/worklife/campus/a30714/time-wasting-funny-pointless-websites/",
     "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/HiRes_BlockIsland_Aerial_7-23-2015.jpg/1200px-HiRes_BlockIsland_Aerial_7-23-2015.jpg"
   ];
-  return urls[Math.floor(Math.random() *urls.length)];
+  return urls[Math.floor(Math.random() * urls.length)];
 }
 
 function generateLinkJobDescription() {
@@ -109,7 +109,7 @@ function generateLinkJobDescription() {
     "https://www.cosmopolitan.com/uk/worklife/campus/a30714/time-wasting-funny-pointless-websites/",
     "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/HiRes_BlockIsland_Aerial_7-23-2015.jpg/1200px-HiRes_BlockIsland_Aerial_7-23-2015.jpg"
   ];
-  return urls[Math.floor(Math.random() *urls.length)];
+  return urls[Math.floor(Math.random() * urls.length)];
 }
 
 function generateJobStatus() {
@@ -119,7 +119,7 @@ function generateJobStatus() {
     "interested",
     "negotiate"
   ];
-  return status[Math.floor(Math.random() *status.length)];
+  return status[Math.floor(Math.random() * status.length)];
 }
 
 function generateNotes() {
@@ -129,7 +129,7 @@ function generateNotes() {
     "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
     "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
   ];
-  return notes[Math.floor(Math.random() *notes.length)];
+  return notes[Math.floor(Math.random() * notes.length)];
 }
 
 // generate an object representing a Job.
@@ -227,7 +227,6 @@ describe("Job API resource", function () {
           return Job.count();
         })
         .then(function (count) {
-          console.log('------------------------------------');
           res.body.jobs.length.should.be.equal(count);
         });
     });
@@ -248,6 +247,7 @@ describe("Job API resource", function () {
           res.body.jobs.forEach(function (job) {
             job.should.be.a("object");
             job.should.include.keys(
+              "id",
               "companyName",
               "companyLocation",
               "positionTitle",
@@ -263,8 +263,8 @@ describe("Job API resource", function () {
           return Job.findById(resJob.id);
         })
         .then(function (job) {
+          resJob.companyLocation.id.equal(job.id);
           resJob.companyName.should.equal(job.companyName);
-          resJob.companyLocation.should.equal(job.companyLocation);
           resJob.positionTitle.should.equal(job.positionTitle);
           resJob.companyType.should.equal(job.companyType);
           resJob.salary.should.equal(job.salary);
@@ -295,60 +295,40 @@ describe("Job API resource", function () {
           res.should.be.json;
           res.body.should.be.a("object");
           res.body.should.include.keys(
-            "airline",
-            "confirmationCode",
-            "departure",
-            "arrival"
+            "id",
+            "companyName",
+            "companyLocation",
+            "positionTitle",
+            "companyType",
+            "salary",
+            "companyWebsite",
+            "linkJobDescription",
+            "jobStatus",
+            "notes"
           );
-          res.body.airline.should.equal(newJob.airline);
-          res.body.confirmationCode.should.equal(newJob.confirmationCode);
-
-          res.body.departure.city.should.equal(newJob.departure.city);
-          res.body.departure.airport.should.equal(newJob.departure.airport);
-          res.body.departure.terminal.should.equal(newJob.departure.terminal);
-          res.body.departure.gate.should.equal(newJob.departure.gate);
-          resDepartureDate.should.equal(JobDepartureDate);
-
-          res.body.arrival.city.should.equal(newJob.arrival.city);
-          res.body.arrival.airport.should.equal(newJob.arrival.airport);
-          res.body.arrival.terminal.should.equal(newJob.arrival.terminal);
-          res.body.arrival.gate.should.equal(newJob.arrival.gate);
-          resArrivalDate.should.equal(JobArrivalDate);
+          res.body.id.should.notEqual(null);
+          resJob.companyName.should.equal(newJob.companyName);
+          resJob.companyLocation.should.equal(newJob.companyLocation);
+          resJob.positionTitle.should.equal(newJob.positionTitle);
+          resJob.companyType.should.equal(newJob.companyType);
+          resJob.salary.should.equal(newJob.salary);
+          resJob.companyWebsite.should.equal(newJob.companyWebsite);
+          resJob.linkJobDescription.should.equal(newJob.linkJobDescription);
+          resJob.jobStatus.should.equal(newJob.jobStatus);
+          resJob.notes.should.equal(newJob.notes);
 
           return Job.findById(res.body.id);
         })
-        .then(function (Job) {
-          //strategy:
-          // use dates to create two instances of the Date object.
-          //  call 'getMilliseconds() to compare both values'
-          let JobDepartureDate = new Date(
-            `${newJob.departure.date}`
-          ).getMilliseconds();
-          let resDepartureDate = new Date(
-            `${Job.departure.date}`
-          ).getMilliseconds();
-
-          let JobArrivalDate = new Date(
-            `${newJob.arrival.date}`
-          ).getMilliseconds();
-          let resArrivalDate = new Date(
-            `${Job.arrival.date}`
-          ).getMilliseconds();
-
-          Job.airline.should.equal(newJob.airline);
-          Job.confirmationCode.should.equal(newJob.confirmationCode);
-
-          Job.departure.city.should.equal(newJob.departure.city);
-          Job.departure.airport.should.equal(newJob.departure.airport);
-          Job.departure.terminal.should.equal(newJob.departure.terminal);
-          Job.departure.gate.should.equal(newJob.departure.gate);
-          JobDepartureDate.should.equal(resDepartureDate);
-
-          Job.arrival.city.should.equal(newJob.arrival.city);
-          Job.arrival.airport.should.equal(newJob.arrival.airport);
-          Job.arrival.terminal.should.equal(newJob.arrival.terminal);
-          Job.arrival.gate.should.equal(newJob.arrival.gate);
-          JobArrivalDate.should.equal(resArrivalDate);
+        .then(function (job) {
+          job.companyName.should.equal(newJob.companyName);
+          job.companyLocation.should.equal(newJob.companyLocation);
+          job.positionTitle.should.equal(newJob.positionTitle);
+          job.companyType.should.equal(newJob.companyType);
+          job.salary.should.equal(newJob.salary);
+          job.companyWebsite.should.equal(newJob.companyWebsite);
+          job.linkJobDescription.should.equal(newJob.linkJobDescription);
+          job.jobStatus.should.equal(newJob.jobStatus);
+          job.notes.should.equal(newJob.notes);
         });
     });
   });
@@ -361,22 +341,21 @@ describe("Job API resource", function () {
     //  4. Prove Job in db is correctly updated
     it("should update fields sent over", function () {
       const updateData = {
-        departure: {
-          airport: "xxx"
-        },
-        confirmationCode: "1111111"
+        companyLocation: "144 Park Avenue",
+        notes: "I wonder I wonder why this is a note",
+        positionTitle: "manager"
       };
 
       return Job.findOne()
-        .then(function (Job) {
-          updateData.id = Job.id;
+        .then(function (job) {
+          updateData.id = job.id;
 
           // make request then inspect it to make sure it reflects
           // the data ent
           return chai
             .request(app)
-            .put(`/Jobs/${Job.id}`)
-            .set("Authorization", `Bearer ${validToken}`)
+            .put(`/api/jobs/${job.id}`)
+            // .set("Authorization", `Bearer ${validToken}`)
             .send(updateData);
         })
         .then(function (res) {
@@ -384,9 +363,10 @@ describe("Job API resource", function () {
 
           return Job.findById(updateData.id);
         })
-        .then(function (Job) {
-          Job.departure.airport.should.equal(updateData.departure.airport);
-          Job.confirmationCode.should.equal(updateData.confirmationCode);
+        .then(function (job) {
+          job.positionTitle.should.equal(updateData.positionTitle);
+          job.companyLocation.should.equal(updateData.companyLocation);
+          job.notes.should.equal(updateData.notes);
         });
     });
   });
