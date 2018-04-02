@@ -263,7 +263,7 @@ describe("Job API resource", function () {
           return Job.findById(resJob.id);
         })
         .then(function (job) {
-          resJob.companyLocation.id.equal(job.id);
+          resJob.id.should.equal(job.id);
           resJob.companyName.should.equal(job.companyName);
           resJob.positionTitle.should.equal(job.positionTitle);
           resJob.companyType.should.equal(job.companyType);
@@ -378,26 +378,26 @@ describe("Job API resource", function () {
     //  3. assert that response has right status code
     //  4. prove that Job with the id doesn't exist in db anymore
     it("delete a Job by id", function () {
-      let Job;
+      let job;
 
       return Job.findOne()
-        .then(function (_Job) {
-          Job = _Job;
+        .then(function (_job) {
+          job = _job;
           return chai
             .request(app)
-            .delete(`/Jobs/${Job.id}`)
-            .set("Authorization", `Bearer ${validToken}`);
+            .delete(`/api/jobs/${job.id}`)
+            // .set("Authorization", `Bearer ${validToken}`);
         })
         .then(function (res) {
           res.should.have.status(204);
-          return Job.findById(Job.id);
+          return Job.findById(job.id);
         })
-        .then(function (_Job) {
+        .then(function (_job) {
           // when a variable's value is null, chaining `should`
           // doesn't work. so `_Job.should.be.null` would raise
           // an error. `should.be.null(_Job)` is a assertions is made
           // about a null value.
-          should.not.exist(_Job);
+          should.not.exist(_job);
         });
     });
   });
