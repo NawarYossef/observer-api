@@ -41,22 +41,17 @@ app.get("*", (req, res) => {
 let server;
 
 function runServer(databaseUrl, port = PORT) {
-  console.log("returning something or nothing")
   return new Promise((resolve, reject) => {
-    console.log(" connecting to mongoose ", databaseUrl)
     mongoose.connect(databaseUrl, err => {
       if (err) {
-        console.log("  mongoose failed")
         return reject(err);
       }
-      console.log("binding to a port", port)
       server = app
         .listen(port, () => {
           console.log(`Your app is listening on port ${port}`);
           resolve();
         })
         .on("error", err => {
-          console.log("  mongoose disconnecting")
           mongoose.disconnect();
           reject(err);
         });

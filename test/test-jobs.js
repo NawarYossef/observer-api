@@ -227,13 +227,13 @@ describe("Job API resource", function () {
           return Job.count();
         })
         .then(function (count) {
-          res.body.jobs.should.have.length.of(count);
+          console.log('------------------------------------');
+          res.body.jobs.length.should.be.equal(count);
         });
     });
 
     it("should return Jobs with right fields", function () {
       // Get back all Jobs, and ensure they have expected keys
-
       let resJob;
       return chai
         .request(app)
@@ -242,8 +242,8 @@ describe("Job API resource", function () {
         .then(function (res) {
           res.should.have.status(200);
           res.should.be.json;
-          res.body.Jobs.should.be.a("array");
-          res.body.Jobs.should.have.length.of.at.least(1);
+          res.body.jobs.should.be.a("array");
+          res.body.jobs.should.have.length.of.at.least(1);
 
           res.body.jobs.forEach(function (job) {
             job.should.be.a("object");
@@ -263,15 +263,15 @@ describe("Job API resource", function () {
           return Job.findById(resJob.id);
         })
         .then(function (job) {
-          resJob.companyName.should.equal(Job.companyName);
-          resJob.companyLocation.should.equal(Job.companyLocation);
-          resJob.positionTitle.should.equal(Job.positionTitle);
-          resJob.companyType.should.equal(Job.companyType);
-          resJob.salary.should.equal(Job.salary);
-          resJob.companyWebsite.should.equal(Job.companyWebsite);
-          resJob.linkJobDescription.should.equal(Job.linkJobDescription);
-          resJob.jobStatus.should.equal(Job.jobStatus);
-          resJob.notes.should.equal(Job.notes);
+          resJob.companyName.should.equal(job.companyName);
+          resJob.companyLocation.should.equal(job.companyLocation);
+          resJob.positionTitle.should.equal(job.positionTitle);
+          resJob.companyType.should.equal(job.companyType);
+          resJob.salary.should.equal(job.salary);
+          resJob.companyWebsite.should.equal(job.companyWebsite);
+          resJob.linkJobDescription.should.equal(job.linkJobDescription);
+          resJob.jobStatus.should.equal(job.jobStatus);
+          resJob.notes.should.equal(job.notes);
         });
     });
   });
