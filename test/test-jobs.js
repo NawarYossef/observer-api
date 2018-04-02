@@ -28,16 +28,16 @@ chai.use(chaiHttp);
 // the Faker library is used to automatically
 // generate placeholder values for author, title, content
 // and then insert that data into mongo
-function seedTripData() {
-  console.info("seeding trips data");
+function seedJobData() {
+  console.info("seeding Jobs data");
   const seedData = [];
 
   for (let i = 1; i <= 5; i++) {
-    seedData.push(generateTripData());
+    seedData.push(generateJobData());
   }
 
   // this will return a promise
-  return Trip.insertMany(seedData);
+  return Job.insertMany(seedData);
 }
 
 // used to generate data to put in db
@@ -103,7 +103,36 @@ function generateCompanyWebsite() {
   return urls[Math.floor(Math.random() *urls.length)];
 }
 
-// generate an object representing a trip.
+function generateLinkJobDescription() {
+  const urls = [
+    "https://www.randomlists.com/urls",
+    "https://www.cosmopolitan.com/uk/worklife/campus/a30714/time-wasting-funny-pointless-websites/",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/HiRes_BlockIsland_Aerial_7-23-2015.jpg/1200px-HiRes_BlockIsland_Aerial_7-23-2015.jpg"
+  ];
+  return urls[Math.floor(Math.random() *urls.length)];
+}
+
+function generateJobStatus() {
+  const status = [
+    "applied",
+    "interview",
+    "interested",
+    "negotiate"
+  ];
+  return status[Math.floor(Math.random() *status.length)];
+}
+
+function generateNotes() {
+  const notes = [
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
+    "t enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+  ];
+  return notes[Math.floor(Math.random() *notes.length)];
+}
+
+// generate an object representing a Job.
 // can be used to generate seed data for db
 // or request.body data
 function generateJobData() {
@@ -114,19 +143,11 @@ function generateJobData() {
     companyType: generateCompanyType(),
     salary: String(faker.random.number()),
     companyWebsite: generateCompanyWebsite(),
-    linkJobDescription: linkJobDescription(),
+    linkJobDescription: generateLinkJobDescription(),
     jobStatus: generateJobStatus(),
-    notes: generateNotes(),
-
-    user: id
+    notes: generateNotes()
+    // user: id
   };
-}
-
-function parseDate(data) {
-  const month = new Date(data).toString().split(" ")[1];
-  const day = new Date(data).toString().split(" ")[2];
-  const year = new Date(data).toString().split(" ")[3];
-  return month + " " + day + ", " + year;
 }
 
 // this function deletes the entire database.
@@ -138,48 +159,48 @@ function tearDownDb() {
   return mongoose.connection.dropDatabase();
 }
 
-describe("Trip API resource", function () {
+describe("Job API resource", function () {
   // each of these hook functions are needed to return a promise
   // otherwise a callback "done" will need to be called.
   before(function () {
     return runServer(TEST_DATABASE_URL);
   });
 
-  beforeEach(function () {
-    return User.hashPassword(password).then(password =>
-      User.create({
-        username,
-        password,
-        email,
-        firstName,
-        lastName
-      })
-        .then(user => (id = user.id))
-        .then(() => {
-          validToken = jwt.sign(
-            {
-              user: {
-                username,
-                firstName,
-                lastName,
-                email,
-                id
-              },
-              exp: Math.floor(Date.now() / 1000) + 500 // Expired ten seconds ago
-            },
-            JWT_SECRET,
-            {
-              algorithm: "HS256",
-              subject: username
-            }
-          );
-          return "";
-        })
-    );
-  });
+  // beforeEach(function () {
+  //   return User.hashPassword(password).then(password =>
+  //     User.create({
+  //       username,
+  //       password,
+  //       email,
+  //       firstName,
+  //       lastName
+  //     })
+  //       .then(user => (id = user.id))
+  //       .then(() => {
+  //         validToken = jwt.sign(
+  //           {
+  //             user: {
+  //               username,
+  //               firstName,
+  //               lastName,
+  //               email,
+  //               id
+  //             },
+  //             exp: Math.floor(Date.now() / 1000) + 500 // Expired ten seconds ago
+  //           },
+  //           JWT_SECRET,
+  //           {
+  //             algorithm: "HS256",
+  //             subject: username
+  //           }
+  //         );
+  //         return "";
+  //       })
+  //   );
+  // });
 
   beforeEach(function () {
-    return seedTripData();
+    return seedJobData();
   });
 
   afterEach(function () {
@@ -191,114 +212,84 @@ describe("Trip API resource", function () {
   });
 
   describe("GET endpoint", function () {
-    it("should return all existing trips", function () {
+    it("should return all existing jobs", function () {
       let res;
       return chai
         .request(app)
-        .get("/trips")
-        .set("Authorization", `Bearer ${validToken}`)
+        .get("/api/jobs")
+        // .set("Authorization", `Bearer ${validToken}`)
         .then(function (_res) {
           // so subsequent .then blocks can access res obj.
           res = _res;
           res.should.have.status(200);
           // otherwise the db seeding didn't work
-          res.body.trips.should.have.length.of.at.least(1);
-          return Trip.count();
+          res.body.jobs.should.have.length.of.at.least(1);
+          return Job.count();
         })
         .then(function (count) {
-          res.body.trips.should.have.length.of(count);
+          res.body.jobs.should.have.length.of(count);
         });
     });
 
-    it("should return trips with right fields", function () {
-      // Get back all trips, and ensure they have expected keys
+    it("should return Jobs with right fields", function () {
+      // Get back all Jobs, and ensure they have expected keys
 
-      let resTrip;
+      let resJob;
       return chai
         .request(app)
-        .get("/trips")
-        .set("Authorization", `Bearer ${validToken}`)
+        .get("/api/jobs")
+        // .set("Authorization", `Bearer ${validToken}`)
         .then(function (res) {
           res.should.have.status(200);
           res.should.be.json;
-          res.body.trips.should.be.a("array");
-          res.body.trips.should.have.length.of.at.least(1);
+          res.body.Jobs.should.be.a("array");
+          res.body.Jobs.should.have.length.of.at.least(1);
 
-          res.body.trips.forEach(function (trip) {
-            trip.should.be.a("object");
-            trip.should.include.keys(
-              "airline",
-              "confirmationCode",
-              "departure",
-              "arrival"
+          res.body.jobs.forEach(function (job) {
+            job.should.be.a("object");
+            job.should.include.keys(
+              "companyName",
+              "companyLocation",
+              "positionTitle",
+              "companyType",
+              "salary",
+              "companyWebsite",
+              "linkJobDescription",
+              "jobStatus",
+              "notes"
             );
           });
-          resTrip = res.body.trips[0];
-          return Trip.findById(resTrip.id);
+          resJob = res.body.jobs[0];
+          return Job.findById(resJob.id);
         })
-        .then(function (trip) {
-          //strategy:
-          // use dates to create two instances of the Date object.
-          //  call 'getMilliseconds() to compare both values'
-
-          let tripDepartureDate = new Date(
-            `${trip.departure.date}`
-          ).getMilliseconds();
-          let resTripDepartureDate = new Date(
-            `${resTrip.departure.date}`
-          ).getMilliseconds();
-
-          let tripArrivalDate = new Date(
-            `${trip.arrival.date}`
-          ).getMilliseconds();
-          let resTripArrivalDate = new Date(
-            `${resTrip.arrival.date}`
-          ).getMilliseconds();
-          resTrip.departure.city.should.equal(trip.departure.city);
-          resTrip.departure.airport.should.equal(trip.departure.airport);
-          resTrip.departure.terminal.should.equal(trip.departure.terminal);
-          resTrip.departure.gate.should.equal(trip.departure.gate);
-          resTripDepartureDate.should.equal(tripDepartureDate);
-
-          resTrip.arrival.city.should.equal(trip.arrival.city);
-          resTrip.arrival.airport.should.equal(trip.arrival.airport);
-          resTrip.arrival.terminal.should.equal(trip.arrival.terminal);
-          resTrip.arrival.gate.should.equal(trip.arrival.gate);
-          resTripArrivalDate.should.equal(tripArrivalDate);
+        .then(function (job) {
+          resJob.companyName.should.equal(Job.companyName);
+          resJob.companyLocation.should.equal(Job.companyLocation);
+          resJob.positionTitle.should.equal(Job.positionTitle);
+          resJob.companyType.should.equal(Job.companyType);
+          resJob.salary.should.equal(Job.salary);
+          resJob.companyWebsite.should.equal(Job.companyWebsite);
+          resJob.linkJobDescription.should.equal(Job.linkJobDescription);
+          resJob.jobStatus.should.equal(Job.jobStatus);
+          resJob.notes.should.equal(Job.notes);
         });
     });
   });
 
   describe("POST endpoint", function () {
     // make a POST request with data,
-    // then prove that the trip you get back has
+    // then prove that the Job you get back has
     // right keys, and that `id` is there (which means
     // the data was inserted into db)
-    it("should add a new trip", function () {
-      const newTrip = generateTripData();
+    it("should add a new Job", function () {
+      const newJob = generateJobData();
 
       return chai
         .request(app)
-        .post("/trips")
-        .set("Authorization", `Bearer ${validToken}`)
-        .send(newTrip)
+        .post("/api/jobs")
+        // .set("Authorization", `Bearer ${validToken}`)
+        .send(newJob)
         .then(function (res) {
-          //strategy:
-          // use dates to create two instances of the Date object.
-          //  call 'getMilliseconds() to compare both values'
-          let tripDepartureDate = new Date(
-            `${newTrip.departure.date}`
-          ).getMilliseconds();
-          let resDepartureDate = new Date(
-            `${res.body.departure.date}`
-          ).getMilliseconds();
-
-          let tripArrivalDate = new Date(
-            `${newTrip.arrival.date}`
-          ).getMilliseconds();
-          let resArrivalDate = new Date(
-            `${res.body.arrival.date}`
-          ).getMilliseconds();
 
           res.should.have.status(201);
           res.should.be.json;
@@ -309,65 +300,65 @@ describe("Trip API resource", function () {
             "departure",
             "arrival"
           );
-          res.body.airline.should.equal(newTrip.airline);
-          res.body.confirmationCode.should.equal(newTrip.confirmationCode);
+          res.body.airline.should.equal(newJob.airline);
+          res.body.confirmationCode.should.equal(newJob.confirmationCode);
 
-          res.body.departure.city.should.equal(newTrip.departure.city);
-          res.body.departure.airport.should.equal(newTrip.departure.airport);
-          res.body.departure.terminal.should.equal(newTrip.departure.terminal);
-          res.body.departure.gate.should.equal(newTrip.departure.gate);
-          resDepartureDate.should.equal(tripDepartureDate);
+          res.body.departure.city.should.equal(newJob.departure.city);
+          res.body.departure.airport.should.equal(newJob.departure.airport);
+          res.body.departure.terminal.should.equal(newJob.departure.terminal);
+          res.body.departure.gate.should.equal(newJob.departure.gate);
+          resDepartureDate.should.equal(JobDepartureDate);
 
-          res.body.arrival.city.should.equal(newTrip.arrival.city);
-          res.body.arrival.airport.should.equal(newTrip.arrival.airport);
-          res.body.arrival.terminal.should.equal(newTrip.arrival.terminal);
-          res.body.arrival.gate.should.equal(newTrip.arrival.gate);
-          resArrivalDate.should.equal(tripArrivalDate);
+          res.body.arrival.city.should.equal(newJob.arrival.city);
+          res.body.arrival.airport.should.equal(newJob.arrival.airport);
+          res.body.arrival.terminal.should.equal(newJob.arrival.terminal);
+          res.body.arrival.gate.should.equal(newJob.arrival.gate);
+          resArrivalDate.should.equal(JobArrivalDate);
 
-          return Trip.findById(res.body.id);
+          return Job.findById(res.body.id);
         })
-        .then(function (trip) {
+        .then(function (Job) {
           //strategy:
           // use dates to create two instances of the Date object.
           //  call 'getMilliseconds() to compare both values'
-          let tripDepartureDate = new Date(
-            `${newTrip.departure.date}`
+          let JobDepartureDate = new Date(
+            `${newJob.departure.date}`
           ).getMilliseconds();
           let resDepartureDate = new Date(
-            `${trip.departure.date}`
+            `${Job.departure.date}`
           ).getMilliseconds();
 
-          let tripArrivalDate = new Date(
-            `${newTrip.arrival.date}`
+          let JobArrivalDate = new Date(
+            `${newJob.arrival.date}`
           ).getMilliseconds();
           let resArrivalDate = new Date(
-            `${trip.arrival.date}`
+            `${Job.arrival.date}`
           ).getMilliseconds();
 
-          trip.airline.should.equal(newTrip.airline);
-          trip.confirmationCode.should.equal(newTrip.confirmationCode);
+          Job.airline.should.equal(newJob.airline);
+          Job.confirmationCode.should.equal(newJob.confirmationCode);
 
-          trip.departure.city.should.equal(newTrip.departure.city);
-          trip.departure.airport.should.equal(newTrip.departure.airport);
-          trip.departure.terminal.should.equal(newTrip.departure.terminal);
-          trip.departure.gate.should.equal(newTrip.departure.gate);
-          tripDepartureDate.should.equal(resDepartureDate);
+          Job.departure.city.should.equal(newJob.departure.city);
+          Job.departure.airport.should.equal(newJob.departure.airport);
+          Job.departure.terminal.should.equal(newJob.departure.terminal);
+          Job.departure.gate.should.equal(newJob.departure.gate);
+          JobDepartureDate.should.equal(resDepartureDate);
 
-          trip.arrival.city.should.equal(newTrip.arrival.city);
-          trip.arrival.airport.should.equal(newTrip.arrival.airport);
-          trip.arrival.terminal.should.equal(newTrip.arrival.terminal);
-          trip.arrival.gate.should.equal(newTrip.arrival.gate);
-          tripArrivalDate.should.equal(resArrivalDate);
+          Job.arrival.city.should.equal(newJob.arrival.city);
+          Job.arrival.airport.should.equal(newJob.arrival.airport);
+          Job.arrival.terminal.should.equal(newJob.arrival.terminal);
+          Job.arrival.gate.should.equal(newJob.arrival.gate);
+          JobArrivalDate.should.equal(resArrivalDate);
         });
     });
   });
 
   describe("PUT endpoint", function () {
     // strategy:
-    //  1. Get an existing trip from db
-    //  2. Make a PUT request to update that trip
-    //  3. Prove trip returned by request contains data we sent
-    //  4. Prove trip in db is correctly updated
+    //  1. Get an existing Job from db
+    //  2. Make a PUT request to update that Job
+    //  3. Prove Job returned by request contains data we sent
+    //  4. Prove Job in db is correctly updated
     it("should update fields sent over", function () {
       const updateData = {
         departure: {
@@ -376,57 +367,57 @@ describe("Trip API resource", function () {
         confirmationCode: "1111111"
       };
 
-      return Trip.findOne()
-        .then(function (trip) {
-          updateData.id = trip.id;
+      return Job.findOne()
+        .then(function (Job) {
+          updateData.id = Job.id;
 
           // make request then inspect it to make sure it reflects
           // the data ent
           return chai
             .request(app)
-            .put(`/trips/${trip.id}`)
+            .put(`/Jobs/${Job.id}`)
             .set("Authorization", `Bearer ${validToken}`)
             .send(updateData);
         })
         .then(function (res) {
           res.should.have.status(204);
 
-          return Trip.findById(updateData.id);
+          return Job.findById(updateData.id);
         })
-        .then(function (trip) {
-          trip.departure.airport.should.equal(updateData.departure.airport);
-          trip.confirmationCode.should.equal(updateData.confirmationCode);
+        .then(function (Job) {
+          Job.departure.airport.should.equal(updateData.departure.airport);
+          Job.confirmationCode.should.equal(updateData.confirmationCode);
         });
     });
   });
 
   describe("DELETE endpoint", function () {
     // strategy:
-    //  1. get a trip
-    //  2. make a DELETE request for that trip's id
+    //  1. get a Job
+    //  2. make a DELETE request for that Job's id
     //  3. assert that response has right status code
-    //  4. prove that trip with the id doesn't exist in db anymore
-    it("delete a trip by id", function () {
-      let trip;
+    //  4. prove that Job with the id doesn't exist in db anymore
+    it("delete a Job by id", function () {
+      let Job;
 
-      return Trip.findOne()
-        .then(function (_trip) {
-          trip = _trip;
+      return Job.findOne()
+        .then(function (_Job) {
+          Job = _Job;
           return chai
             .request(app)
-            .delete(`/trips/${trip.id}`)
+            .delete(`/Jobs/${Job.id}`)
             .set("Authorization", `Bearer ${validToken}`);
         })
         .then(function (res) {
           res.should.have.status(204);
-          return Trip.findById(trip.id);
+          return Job.findById(Job.id);
         })
-        .then(function (_trip) {
+        .then(function (_Job) {
           // when a variable's value is null, chaining `should`
-          // doesn't work. so `_trip.should.be.null` would raise
-          // an error. `should.be.null(_trip)` is a assertions is made
+          // doesn't work. so `_Job.should.be.null` would raise
+          // an error. `should.be.null(_Job)` is a assertions is made
           // about a null value.
-          should.not.exist(_trip);
+          should.not.exist(_Job);
         });
     });
   });
