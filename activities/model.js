@@ -1,20 +1,22 @@
 const mongoose = require("mongoose");
 
 const ActivitySchema = mongoose.Schema({
-  date: { type: Date, required: false },
+  title: { type: String, required: false },
   type: { type: String, required: false },
-  name: { type: String, required: false },
+  date: { type: Date, required: false },
+  topic: { type: String, required: false },
   website: { type: String, required: false },
-  
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+
+  // user: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
 });
 
-ActivitySchema.methods.serialize = function() {
+ActivitySchema.methods.serialize = function () {
   return {
     id: this._id,
-    date: this.date,
+    title: this.title,
     type: this.type,
-    name: this.name,
+    date: this.date,
+    topic: this.topic,
     website: this.website
   };
 };
