@@ -340,7 +340,7 @@ describe("Job API resource", function () {
         companyLocation: "144 Park Avenue",
         notes: "I wonder I wonder why this is a note",
         positionTitle: "manager"
-      };
+      }
 
       return Job.findOne()
         .then(function (job) {
