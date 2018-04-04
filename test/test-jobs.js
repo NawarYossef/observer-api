@@ -301,7 +301,7 @@ describe("Job API resource", function () {
             "jobStatus",
             "notes"
           );
-         
+
           // res.body.id.should.notEqual(null);
           res.body.companyName.should.equal(newJob.companyName);
           // res.body.companyLocation.should.equal(newJob.companyLocation);
@@ -382,7 +382,7 @@ describe("Job API resource", function () {
           return chai
             .request(app)
             .delete(`/api/jobs/${job.id}`)
-            // .set("Authorization", `Bearer ${validToken}`);
+          // .set("Authorization", `Bearer ${validToken}`);
         })
         .then(function (res) {
           res.should.have.status(204);
