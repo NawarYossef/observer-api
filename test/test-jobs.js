@@ -281,7 +281,7 @@ describe("Job API resource", function () {
         .send(newJob)
         .then(function (res) {
           console.log('------------------------------------');
-          console.log("this is response", Object.keys(res.body));
+          console.log("this is response", Object.keys(res.body))
           console.log('------------------------------------');
           res.should.have.status(201);
           res.should.be.json;
