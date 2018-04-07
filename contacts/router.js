@@ -5,20 +5,20 @@ const router = express.Router();
 const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json();
 
-const { Activity } = require("./model");
+const { Contact } = require("./model");
 // const jwtAuth = passport.authenticate("jwt", { session: false });
 
 router.use(jsonParser);
 
 // ============== GET endpoint ==============
 router.get("/", (req, res) => {
-  // Activity.find({ user: req.user.id })
-  Activity.find()
+  // Contact.find({ user: req.user.id })
+  Contact.find()
     // call the `.serialize` instance method we've created in
     // models.js in order to only expose the data we want the API return.
-    .then(activities => {
+    .then(contacts => {
       res.json({
-        activities: activities.map(activity => activity.serialize())
+        contacts: contacts.map(contact => contact.serialize())
       });
     })
     .catch(err => {
@@ -28,8 +28,8 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:id", (req, res) => {
-  Activity.findById(req.params.id)
-    .then(activity => res.json(activity.serialize()))
+  Contact.findById(req.params.id)
+    .then(contact => res.json(contact.serialize()))
     .catch(err => {
       console.error(err);
       res.status(500).json({ error: "something went horribly awry" });
@@ -39,11 +39,11 @@ router.get("/:id", (req, res) => {
 // ============== POST endpoint ==============
 router.post("/", (req, res) => {
   const requiredFields = [
-    "title",
-    "type",
-    "date",
-    "topic",
-    "website"
+    "name",
+    "contactTitle",
+    "email",
+    "companyName",
+    "notes"
   ];
 
   for (let i = 0; i < requiredFields.length; i++) {
@@ -55,14 +55,14 @@ router.post("/", (req, res) => {
     }
   }
 
-  Activity.create({
-    title: req.body.title,
-    type: req.body.type,
-    date: req.body.date,
-    topic: req.body.topic,
-    website: req.body.website
+  Contact.create({
+    name: req.body.name,
+    contactTitle: req.body.contactTitle,
+    email: req.body.email,
+    companyName: req.body.companyName,
+    notes: req.body.notes,
   })
-    .then(activity => res.status(201).json(activity.serialize()))
+    .then(contact => res.status(201).json(contact.serialize()))
     .catch(err => {
       console.error(err);
       res.status(500).json({ error: "Something went wrong" });
@@ -79,11 +79,11 @@ router.put("/:id", (req, res) => {
 
   const updated = {};
   const updatableFields = [
-    "title",
-    "type",
-    "date",
-    "topic",
-    "website"
+    "name",
+    "contactTitle",
+    "email",
+    "companyName",
+    "notes"
   ];
 
   updatableFields.forEach(field => {
@@ -92,15 +92,15 @@ router.put("/:id", (req, res) => {
     }
   });
 
-  Activity.findByIdAndUpdate(req.params.id, { $set: updated }, { new: true })
-    .then(updatedActivity => res.status(204).json(updatedActivity.serialize()))
+  Contact.findByIdAndUpdate(req.params.id, { $set: updated }, { new: true })
+    .then(updatedContact => res.status(204).json(updatedContact.serialize()))
     .catch(err => res.status(500).json({ message: "Something went wrong" }));
 });
 
 // ============== DELETE endpoint ==============
 router.delete("/:id", (req, res) => {
-  Activity.findByIdAndRemove(req.params.id)
-    .then(activity => res.status(204).end())
+  Contact.findByIdAndRemove(req.params.id)
+    .then(contact => res.status(204).end())
     .catch(err => res.status(500).json({ message: "Internal server error" }));
 });
 
