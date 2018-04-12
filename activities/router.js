@@ -27,6 +27,7 @@ router.get("/", (req, res) => {
     });
 });
 
+// ============== GET by ID endpoint ==============
 router.get("/:id", (req, res) => {
   Activity.findById(req.params.id)
     .then(activity => res.json(activity.serialize()))
