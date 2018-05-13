@@ -29,7 +29,7 @@ app.use(
 // ROUTERS
 app.use('/api/jobs/', jobsRouter);
 app.use('/api/activities/', activitiesRouter);
-app.use('/api/contacts/', contactsRouter);
+app.use('/api/contacts/', contactsRouter)
 
 // basic GET request
 app.get("*", (req, res) => {
